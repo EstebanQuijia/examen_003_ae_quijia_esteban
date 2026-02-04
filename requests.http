@@ -1,0 +1,58 @@
+### VARIABLES GLOBALES
+@host = http://localhost:8080
+
+
+### 1. ENDPOINT PÚBLICO (Sin seguridad)
+# Retorna el estado del servicio y un timestamp.
+GET {{host}}/api/rules/public/health
+Accept: application/json
+
+---
+
+### 2. ENDPOINTS AUTENTICADOS (Cualquier usuario con JWT)
+
+### Listar todas las reglas de inventario
+GET {{host}}/api/rules
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Obtener una regla específica por ID
+GET {{host}}/api/rules/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+---
+
+### 3. ENDPOINTS DE ADMINISTRADOR (Requiere Rol ADMIN)
+
+### Crear una nueva regla de inventario
+# Este endpoint extraerá tu 'sub' del token para el campo updatedBy.
+POST {{host}}/api/rules
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Regla de Stock Crítico",
+  "description": "Notificar cuando el stock sea menor a 10 unidades",
+  "isActive": true
+}
+
+### Actualizar una regla existente
+PUT {{host}}/api/rules/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Regla de Stock Crítico - Actualizada",
+  "description": "Notificar cuando el stock sea menor a 5 unidades",
+  "isActive": true
+}
+
+### Activar/Desactivar regla (Toggle)
+# Este endpoint audita el cambio usando tu ID de Cognito.
+PATCH {{host}}/api/rules/1/toggle
+Authorization: Bearer {{token}}
+
+### Eliminar una regla (Opcional)
+DELETE {{host}}/api/rules/1
+Authorization: Bearer {{token}}
