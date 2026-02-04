@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
+
 
 data class ErrorDetails(val message: String?, val code: Int)
 
@@ -20,3 +22,10 @@ class GlobalExceptionHandler {
         return ResponseEntity(ErrorDetails(ex.message, 403), HttpStatus.FORBIDDEN)
     }
 }
+
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class NotFoundException(message: String) : RuntimeException(message)
+
+@ResponseStatus(HttpStatus.FORBIDDEN)
+class UnauthorizedActionException(message: String) : RuntimeException(message)
